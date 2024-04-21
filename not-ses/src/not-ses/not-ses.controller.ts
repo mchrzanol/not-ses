@@ -10,6 +10,9 @@ export class NotSesController {
 
   @EventPattern("email-request")
   handleSendRequest(@Payload() sendInfo:SendEmailDto) {
+    if (!sendInfo.to || !sendInfo.title || !sendInfo.text) {
+      return;
+    }
     return this.notSesService.send(sendInfo);
   }
 
