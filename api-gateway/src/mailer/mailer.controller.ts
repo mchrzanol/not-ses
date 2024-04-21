@@ -12,7 +12,12 @@ export class MailerController {
     return this.mailerService.send(sendInfo)
   }
   @Post('verification-code')
-  sendVerificationCode(@Body() verificationInfo:VerificationDto) {
-    return this.mailerService.sendVerificationCode(verificationInfo);
+  async sendVerificationCode(@Body() verificationInfo:VerificationDto) {
+    try {
+      const response = await this.mailerService.sendVerificationCode(verificationInfo);
+      return response;
+  } catch (error) {
+      return { Error: error.message };
+  }
   }
 }

@@ -13,9 +13,16 @@ export class MailerService {
         return {message:"Email send requested."}
     }
 
-    sendVerificationCode(verificationInfo:VerificationDto) {
-        this.rabbitClient.emit("verification-code", verificationInfo);
-
-        return {message: `Verification code ${verificationInfo.code} has been sended to ${verificationInfo.to}.`}
+    async sendVerificationCode(verificationInfo:VerificationDto): Promise<any>  {
+        return new Promise((resolve, reject) => {
+            this.rabbitClient.send("verification-code", verificationInfo).subscribe({
+                next: (data) => {
+                    resolve(data);
+                },
+                error: (error) => {
+                    reject(error);
+                }
+            });
+        });
     }
 }

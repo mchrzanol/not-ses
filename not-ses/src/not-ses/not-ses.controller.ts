@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { NotSesService } from './not-ses.service';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { SendEmailDto } from './dto/sendEmail.dto';
 import { VerificationDto } from './dto/verification.dto';
 
@@ -13,8 +13,18 @@ export class NotSesController {
     return this.notSesService.send(sendInfo);
   }
 
-  @EventPattern("verification-code")
+  @MessagePattern("verification-code")
   handleVerificationCode(@Payload() verificationInfo:VerificationDto) {
-    return this.notSesService.sendVerificationCode(verificationInfo);
+    if (!verificationInfo.code || !verificationInfo.to || !verificationInfo.serviceName || !verificationInfo.username) {
+      return { Error: "Some missing arguments in the message body." };
+  }
+
+  try {
+      this.notSesService.sendVerificationCode(verificationInfo);
+      return {message: `Verification code ${verificationInfo.code} has been sended to ${verificationInfo.to}.`};
+  } catch (error) {
+      console.error("Error sending verification code:", error);
+      return { Error: "Failed to send verification code." };
+  }
   }
 }
