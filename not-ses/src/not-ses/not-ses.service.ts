@@ -1,25 +1,49 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { SendEmailDto } from './dto/sendEmail.dto';
+import { send } from 'process';
+import { VerificationDto } from './dto/verification.dto';
 
 @Injectable()
 export class NotSesService {
     constructor(private readonly mailerService: MailerService) {}
 
-    example() {
+    send(sendInfo:SendEmailDto) {
         this
           .mailerService
           .sendMail({
-            to: 'mchrzanol22@gmail.com', // list of receivers
+            to: sendInfo.to, // list of receivers
             from: process.env.EMAIL_ID, // sender address
-            subject: 'Testing Nest MailerModule ✔', // Subject line
-            text: 'welcome', // plaintext body
-            html: '<b>welcome</b>', // HTML body content
+            subject: sendInfo.title, // Subject line
+            //text: sendInfo.text, // plaintext body
+            html: `<b>${sendInfo.text}</b>`, // HTML body content
           })
           .then((success) => {
             console.log(success)
           })
           .catch((err) => {
-            console.log(err)
+            console.log("error while sending:", err)
           });
+      };
+    
+  sendVerificationCode(verificationInfo:VerificationDto) {
+    this
+    .mailerService
+    .sendMail({
+      to: verificationInfo.to, // list of receivers
+      from: process.env.EMAIL_ID, // sender address
+      template:'verification.ejs',
+      context: {
+        serviceName: verificationInfo.serviceName,
+        username: verificationInfo.username,
+        verificationCode: verificationInfo.code
       }
+    })
+    .then((success) => {
+      console.log(success)
+    })
+    .catch((err) => {
+      console.log("error while sending:", err)
+    });
+  }
 }

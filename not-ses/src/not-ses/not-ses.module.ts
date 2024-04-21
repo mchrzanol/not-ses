@@ -12,7 +12,7 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
       transport: {
         host:process.env.EMAIL_HOST,
         port:process.env.EMAIL_PORT,
-        secure:false,
+        secure:false,// upgrade later with STARTTLS
         auth: {
           user:process.env.EMAIL_ID,
           pass:process.env.EMAIL_PASS
@@ -22,10 +22,10 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
         from: process.env.EMAIL_ID,
       },
       template: {
-        dir: __dirname + '/templates',
+        dir: process.cwd() + '/templates',
         adapter: new EjsAdapter(),
         options: {
-          strict: true,
+          strict: false,
         },
       },
     }),
