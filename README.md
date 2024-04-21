@@ -9,7 +9,7 @@
 <p>  "serviceName":string</p>
 <p>}</p>
 <h1>Custom Email</h1>
-<p>GET http://localhost:3000/not-ses/send</p>
+<p>POST http://localhost:3000/not-ses/send</p>
 <p>or rabbitmq queue: "not-ses-queue" pattern: "email-request"</p>
 <p>body content: </p>
 <p>{</p>
