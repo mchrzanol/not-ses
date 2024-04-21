@@ -30,9 +30,10 @@ export class NotSesService {
     this
     .mailerService
     .sendMail({
-      to: verificationInfo.to, // list of receivers
+      to: verificationInfo.to, //receiver
       from: process.env.EMAIL_ID, // sender address
       template:'verification.ejs',
+      subject: `${verificationInfo.serviceName} Verification Code`,
       context: {
         serviceName: verificationInfo.serviceName,
         username: verificationInfo.username,
