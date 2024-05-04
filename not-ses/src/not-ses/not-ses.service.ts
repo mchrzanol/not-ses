@@ -1,30 +1,37 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { SendEmailDto } from './dto/sendEmail.dto';
 import { send } from 'process';
 import { VerificationDto } from './dto/verification.dto';
+import { SendEmailNotificationDto } from './dto/sendEmailNotification.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class NotSesService {
     constructor(private readonly mailerService: MailerService) {}
 
-    send(sendInfo:SendEmailDto) {
-        this
-          .mailerService
-          .sendMail({
-            to: sendInfo.to, // list of receivers
-            from: process.env.EMAIL_ID, // sender address
-            subject: sendInfo.title, // Subject line
-            //text: sendInfo.text, // plaintext body
-            html: `<b>${sendInfo.text}</b>`, // HTML body content
-          })
-          .then((success) => {
-            console.log(success)
-          })
-          .catch((err) => {
-            console.log("error while sending:", err)
-          });
+    async sendEmailNotification(sendInfo:SendEmailNotificationDto) {
+      const to = sendInfo.to;
+      const from = sendInfo.sender;//email
+
+      await this.mailerService.sendMail({
+        to:sendInfo.to,
+        from:process.env.EMAIL_ID,//TODO:to do zmiany
+        subject: sendInfo.title, // Subject line
+        html: `<b>${sendInfo.text}</b>`, // HTML body content
+      })
+      .then((success) => {
+        console.log(success)
+      })
+      .catch(async (err) => {
+        console.log("error while sending:", err)
+        throw new RpcException(err)
+      });
+      return {
+        "message":"Email has been sended successfully"
+      }
       };
+
+      
     
   sendVerificationCode(verificationInfo:VerificationDto) {
     this

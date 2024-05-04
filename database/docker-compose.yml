@@ -1,0 +1,16 @@
+version: '3.5'
+volumes:
+  data:
+services:
+  mariaDBMailer:
+    container_name: mariaDBMailer
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: Dupa2137*
+      MYSQL_DATABASE: mariaDBMailer
+      MYSQL_USER: user
+      MYSQL_PASSWORD: Dupa2137*
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"

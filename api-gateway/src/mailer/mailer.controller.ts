@@ -1,14 +1,14 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { MailerService } from './mailer.service';
-import { SendEmailDto } from './dto/sendEmail.dto';
 import { VerificationDto } from './dto/verification.dto';
+import { SendEmailNotificationDto } from './dto/sendEmailNotification.dto';
 
 @Controller('not-ses')
 export class MailerController {
   constructor(private readonly mailerService: MailerService) {}
 
-  @Post('send')
-  send(@Body() sendInfo:SendEmailDto) {
+  @Post('sendNotification')
+  async send(@Body() sendInfo:SendEmailNotificationDto) {
     return this.mailerService.send(sendInfo)
   }
   @Post('verification-code')
