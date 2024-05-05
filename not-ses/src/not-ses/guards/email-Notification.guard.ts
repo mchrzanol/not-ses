@@ -18,15 +18,15 @@ export class EmailNotificationGuard implements CanActivate {
       const { to, group, sender, title, text } = request;
 
       if ((!to || !to.length) && !group) {
-        throw new RpcException(`Have to be provided "to" or "group" argument.`);
+        throw new RpcException( new BadRequestException(`Have to be provided "to" or "group" argument.`));
       }
       
       if(!sender) {
-        throw new RpcException(`"Sender" argument is missing.`);
+        throw new RpcException(new BadRequestException(`"Sender" argument is missing.`));
       }
 
       if(!title || !text) {
-        throw new RpcException(`"Title" or/and "text" argument is missing`);
+        throw new RpcException(new BadRequestException(`"Title" or/and "text" argument is missing`));
       }
 
       // this.configService.setConfig({        
