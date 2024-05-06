@@ -30,7 +30,9 @@ export class MailerService {
                     resolve(data);
                 },
                 error: (error) => {
-                    reject(error);
+                    console.log(error.response);
+                    const rpcException = new RpcException(error.response);
+                    reject(rpcException);
                 }
             });
         });
