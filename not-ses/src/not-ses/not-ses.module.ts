@@ -24,6 +24,7 @@ import { Email } from './entities/email.entity';
       logging: true,
       }),
     }),
+    TypeOrmModule.forFeature([User]),
     ConfigModule,
     MailerModule.forRootAsync({
       imports:[ConfigModule],

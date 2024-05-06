@@ -15,15 +15,12 @@ export class EmailNotificationGuard implements CanActivate {
         throw new RpcException(`Request is undefined.`);
       }
 
-      const { to, group, sender, title, text } = request;
+      const { to, group, title, text } = request;
 
       if ((!to || !to.length) && !group) {
         throw new RpcException( new BadRequestException(`Have to be provided "to" or "group" argument.`));
       }
       
-      if(!sender) {
-        throw new RpcException(new BadRequestException(`"Sender" argument is missing.`));
-      }
 
       if(!title || !text) {
         throw new RpcException(new BadRequestException(`"Title" or/and "text" argument is missing`));
