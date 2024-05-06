@@ -38,60 +38,59 @@ export class NotSesService {
           console.log(success)
         })
       }catch(error) {
-        this.logger.error("error while sending:", error);
+        this.logger.error("error while sending notification email:", error);
         throw new RpcException(new BadRequestException(error.message));
       }
 
       return {
-        "message":"Email has been sended successfully"
+        "message":`Notification email has been sended successfully to [${receivers}].`
       }
     };
 
-      async getAllEmailReceiversByGroup(group:string[]):Promise<string[]> {
-        if(group.length == 0) {
-          return [];
-        }
-        const options: FindManyOptions<User> = { //filtring criteria
-          where: [
-            {
-              role:In(group)
-            }
-          ], 
-        };
+    async getAllEmailReceiversByGroup(group:string[]):Promise<string[]> {
+      if(group.length == 0) {
+        return [];
+      }
+      const options: FindManyOptions<User> = { //filtring criteria
+        where: [
+          {
+            role:In(group)
+          }
+        ], 
+      };
 
-        const receivers:User[] = await this.usersRepository.find(options);
+      const receivers:User[] = await this.usersRepository.find(options);
 
-        if(receivers.length == 0) {
-          this.logger.log(`No users exists in groups: ${group}.`)
-          return [];
-        }
-
-        const receiversEmail:string[] = receivers.map(receiver => receiver.email);
-
-        return receiversEmail;
+      if(receivers.length == 0) {
+        this.logger.log(`No users exists in groups: ${group}.`)
+        return [];
       }
 
-      
+      const receiversEmail:string[] = receivers.map(receiver => receiver.email);
+
+      return receiversEmail;
+    }    
     
-  sendVerificationCode(verificationInfo:VerificationDto) {
-    this
-    .mailerService
-    .sendMail({
-      to: verificationInfo.to, //receiver
-      from: process.env.EMAIL_ID, // sender address
-      template:'verification.ejs',
-      subject: `${verificationInfo.serviceName} Verification Code`,
-      context: {
-        serviceName: verificationInfo.serviceName,
-        username: verificationInfo.username,
-        verificationCode: verificationInfo.code
-      }
-    })
-    .then((success) => {
-      console.log(success)
-    })
-    .catch((err) => {
-      console.log("error while sending:", err)
-    });
+  async sendVerificationCode(verificationInfo:VerificationDto) {
+    try {
+      await this.mailerService.sendMail({
+        to: verificationInfo.to, //receiver
+        from: process.env.EMAIL_ID, // sender address
+        template:'verification.ejs',
+        subject: `Verification Code`,
+        context: {
+          verificationCode: verificationInfo.code
+        }
+      })
+      .then((success) => {
+        console.log(success)
+      })
+    }catch(error) {
+      this.logger.error("error while sending verification email:", error);
+      throw new RpcException(new BadRequestException(error.message));
+    }
+    return {
+      "message":`Verification email has been sended successfully ${verificationInfo.to}.`
+    }
   }
 }

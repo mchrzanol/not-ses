@@ -4,6 +4,7 @@ import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import {SendEmailNotificationDto } from './dto/sendEmailNotification.dto';
 import { VerificationDto } from './dto/verification.dto';
 import { EmailNotificationGuard } from './guards/email-Notification.guard';
+import { EmailVerificationGuard } from './guards/email-verification.guard';
 
 @Controller()
 export class NotSesController {
@@ -16,23 +17,8 @@ export class NotSesController {
   }
 
   @MessagePattern("verification-code")
-  handleVerificationCode(@Payload() verificationInfo:VerificationDto) {
-    if (!verificationInfo.code || !verificationInfo.to || !verificationInfo.serviceName || !verificationInfo.username) {
-      return { 
-        "statusCode": 400,
-        "Error": "Some missing arguments in the message body."
-       };
-  }
-
-  try {
-      this.notSesService.sendVerificationCode(verificationInfo);
-      return {message: `Verification code ${verificationInfo.code} has been sended to ${verificationInfo.to}.`};
-  } catch (error) {
-      console.error("Error sending verification code:", error);
-      return {
-         "statusCode": 400,
-         "Error": "Failed to send verification code." 
-        };
-  }
+  @UseGuards(EmailVerificationGuard)
+  async handleVerificationCode(@Payload() verificationInfo:VerificationDto) {
+    return this.notSesService.sendVerificationCode(verificationInfo);
   }
 }

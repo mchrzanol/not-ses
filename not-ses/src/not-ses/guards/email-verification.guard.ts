@@ -2,7 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus, B
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
-export class EmailNotificationGuard implements CanActivate {
+export class EmailVerificationGuard implements CanActivate {
 
   async canActivate(
     context: ExecutionContext,
@@ -13,15 +13,15 @@ export class EmailNotificationGuard implements CanActivate {
         throw new RpcException(`Request is undefined.`);
       }
 
-      const { to, group, title, text } = request;
+      const { to, code } = request;
 
-      if ((!to || !to.length) && !group) {
-        throw new RpcException( new BadRequestException(`Have to be provided "to" or "group" argument.`));
+      if (!to) {
+        throw new RpcException( new BadRequestException(`Have to be provided "to" argument.`));
       }
       
 
-      if(!title || !text) {
-        throw new RpcException(new BadRequestException(`"Title" or/and "text" argument is missing`));
+      if(!code) {
+        throw new RpcException(new BadRequestException(`"code" argument is missing`));
       }
       
       return true; //if all arguments are fine 
