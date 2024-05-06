@@ -5,14 +5,31 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { ConfigService } from './config.service';
 import { ConfigModule } from './config.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Email } from './entities/email.entity';
 
 @Module({
   imports:[
+    TypeOrmModule.forRootAsync({
+      useFactory:()=> ({
+      type: 'mariadb',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      password: process.env.DB_PASSWORD,
+      username: process.env.DB_USERNAME,
+      entities: [User, Email],
+      database: process.env.DB_DATABASE,
+      synchronize: true,
+      logging: true,
+      }),
+    }),
     ConfigModule,
     MailerModule.forRootAsync({
       imports:[ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        console.log(configService.getConfig().id);
+        await configService.setConfig();//gets email entity from db
+        // console.log(configService.getConfig().id);
         return {
           transport: {
             host: configService.getConfig().host,

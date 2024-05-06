@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { ConfigDataDto, ConfigService } from '../config.service';
+import {ConfigService } from '../config.service';
 
 @Injectable()
 export class EmailNotificationGuard implements CanActivate {
@@ -28,15 +28,7 @@ export class EmailNotificationGuard implements CanActivate {
       if(!title || !text) {
         throw new RpcException(new BadRequestException(`"Title" or/and "text" argument is missing`));
       }
-
-      // this.configService.setConfig({        
-      //   host: "smtp.office365.co",
-      //   port: 587,
-      //   id: "not-ses@outlook.com",
-      //   pass: "Dupa2137*"
-      // })
-
-
+      
       return true; //if all arguments are fine 
   }
 }
