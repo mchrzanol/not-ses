@@ -23,5 +23,5 @@
 <p>BD_PASSWORD=</p>
 <p>BD_USERNAME=</p>
 <p>BD_DATABASE=</p>
-<p>EMAIL_ID={e.g.not-ses@outlook.com(existing in emails table)}</p>
+<p>EMAIL_ID={e.g.not-ses@outlook.com(existing in "emails" table)}</p>
 <p>QUEUE_NAME=</p>
